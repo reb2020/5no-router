@@ -54,7 +54,16 @@ const schema = async(req: Request, res: Response, next: NextFunction) => {
     await req.action.schema.validate(req.action.data)
     next()
   } catch (errors) {
-    res.action.failed(errors)
+    let typeOfErrors = null
+    if (typeof errors === 'object' && errors !== null) {
+      typeOfErrors = errors.constructor.name.toLowerCase()
+    }
+    if (typeOfErrors === 'error') {
+      console.error(errors)
+      res.action.serverError(errors.toString())
+    } else {
+      res.action.failed(errors)
+    }
   }
 }
 
