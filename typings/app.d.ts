@@ -13,9 +13,15 @@ export namespace FiveNoRouter {
     [method: string]: Array<Action>;
   }
 
-  interface Action extends ControllerAction {
+  interface Action {
+    path: string;
+    method: ActionMethods;
+    handler: (req: any, res: any) => void;
     schema: Schema | null;
     data: object;
+    headers?: {
+      [name: string]: string;
+    };
   }
 
   interface ControllerAction {

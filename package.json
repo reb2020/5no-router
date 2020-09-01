@@ -1,6 +1,6 @@
 {
   "name": "@5no/router",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Express router with schema",
   "main": "index.js",
   "types": "typings/index.d.ts",
@@ -48,7 +48,7 @@
     "url": "git+https://github.com/reb2020/5no-router.git"
   },
   "dependencies": {
-    "@5no/schema": "^1.3.4",
+    "@5no/schema": "^1.3.5",
     "express": "^4.17.1"
   },
   "devDependencies": {
