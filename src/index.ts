@@ -72,7 +72,7 @@ const header = (action: FiveNoRouter.Action) => (req: Request, res: Response, ne
   res.header('Content-Type', 'application/json')
   res.header('Access-Control-Allow-Origin', req.headers.origin)
   res.header('Access-Control-Allow-Credentials', 'true')
-  res.header('Access-Control-Allow-Headers', 'Origin, Content-Type')
+  res.header('Access-Control-Allow-Headers', 'Origin, Content-Type, Authorization')
   res.header('Vary', 'Origin')
 
   if (action.headers) {
@@ -90,7 +90,7 @@ const methodNotAllowed = (path: string, allowMethods: Array<FiveNoRouter.ActionM
   res.header('Allow', allowMethods.join(', '))
   res.header('Access-Control-Allow-Origin', req.headers.origin)
   res.header('Access-Control-Allow-Credentials', 'true')
-  res.header('Access-Control-Allow-Headers', 'Origin, Content-Type')
+  res.header('Access-Control-Allow-Headers', 'Origin, Content-Type, Authorization')
   res.header('Access-Control-Allow-Methods', allowMethods.join(', '))
   res.header('Vary', 'Origin')
 
@@ -103,12 +103,14 @@ const optionsHandler = (path: string, allowMethods: Array<FiveNoRouter.ActionMet
   res.header('Allow', allowMethods.join(', '))
   res.header('Access-Control-Allow-Origin', req.headers.origin)
   res.header('Access-Control-Allow-Credentials', 'true')
-  res.header('Access-Control-Allow-Headers', 'Origin, Content-Type')
+  res.header('Access-Control-Allow-Headers', 'Origin, Content-Type, Authorization')
   res.header('Access-Control-Allow-Methods', allowMethods.join(', '))
   res.header('Vary', 'Origin')
 
+  const methods = req.headers['access-control-request-method'] ? [req.headers['access-control-request-method']] : Object.keys(options)
   const reponse = []
-  for (const method of Object.keys(options)) {
+
+  for (const method of methods) {
     for (const action of options[method]) {
       reponse.push({
         path: `${path}${(action.path !== '/' ? action.path : '')}`,
@@ -172,7 +174,7 @@ export default (controller: FiveNoRouter.Controller): Router => {
 
   const allowMethods = ['OPTIONS', ...Object.keys(options)] as Array<FiveNoRouter.ActionMethods | 'OPTIONS'>
 
-  router.options('/', optionsHandler(controller.path, allowMethods, options))
+  router.options('*', optionsHandler(controller.path, allowMethods, options))
   router.all('*', methodNotAllowed(controller.path, allowMethods))
 
   app.use(controller.path, router)
