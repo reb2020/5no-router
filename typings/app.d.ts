@@ -9,8 +9,8 @@ export namespace FiveNoRouter {
     message: any;
   }
 
-  interface Options {
-    [method: string]: Array<Action>;
+  interface ActionsGroupByPath {
+    [path: string]: Array<Action>;
   }
 
   interface Action {

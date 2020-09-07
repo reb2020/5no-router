@@ -85,7 +85,7 @@ const header = (action: FiveNoRouter.Action) => (req: Request, res: Response, ne
 }
 
 // method not allowed
-const methodNotAllowed = (path: string, allowMethods: Array<FiveNoRouter.ActionMethods | 'OPTIONS'>) => (req: Request, res: Response) => {
+const methodNotAllowed = (allowMethods: Array<FiveNoRouter.ActionMethods | 'OPTIONS'>) => (req: Request, res: Response) => {
   res.header('Content-Type', 'application/json')
   res.header('Allow', allowMethods.join(', '))
   res.header('Access-Control-Allow-Origin', req.headers.origin)
@@ -98,7 +98,7 @@ const methodNotAllowed = (path: string, allowMethods: Array<FiveNoRouter.ActionM
 }
 
 // options
-const optionsHandler = (path: string, allowMethods: Array<FiveNoRouter.ActionMethods | 'OPTIONS'>, options: FiveNoRouter.Options) => (req: Request, res: Response) => {
+const optionsHandler = (path: string, allowMethods: Array<FiveNoRouter.ActionMethods | 'OPTIONS'>, options: Array<FiveNoRouter.Action>) => (req: Request, res: Response) => {
   res.header('Content-Type', 'application/json')
   res.header('Allow', allowMethods.join(', '))
   res.header('Access-Control-Allow-Origin', req.headers.origin)
@@ -107,17 +107,15 @@ const optionsHandler = (path: string, allowMethods: Array<FiveNoRouter.ActionMet
   res.header('Access-Control-Allow-Methods', allowMethods.join(', '))
   res.header('Vary', 'Origin')
 
-  const methods = req.headers['access-control-request-method'] ? [req.headers['access-control-request-method']] : Object.keys(options)
+  const method = req.headers['access-control-request-method'] || null
   const reponse = []
 
-  for (const method of methods) {
-    for (const action of options[method]) {
-      reponse.push({
-        path: `${path}${(action.path !== '/' ? action.path : '')}`,
-        method: action.method,
-        schema: action.schema ? action.schema.json() : null,
-      })
-    }
+  for (const action of options.filter(x => x.method === method || !method)) {
+    reponse.push({
+      path: `${path}${(action.path !== '/' ? action.path : '')}`,
+      method: action.method,
+      schema: action.schema ? action.schema.json() : null,
+    })
   }
 
   res.action.success(reponse)
@@ -125,7 +123,7 @@ const optionsHandler = (path: string, allowMethods: Array<FiveNoRouter.ActionMet
 
 const add = (router: Router, action: FiveNoRouter.Action) => {
   const handlerData = [requestHandler(action), header(action), schema, action.handler]
-  switch (action.method) {
+  switch (action.method.toUpperCase()) {
     case 'GET':
       router.get(action.path, ...handlerData)
       break
@@ -152,12 +150,8 @@ export default (controller: FiveNoRouter.Controller): Router => {
   app.use(bodyParser.urlencoded({ extended: true }))
   app.use(responseHandler)
 
-  const options: FiveNoRouter.Options = {}
+  const actions: Array<FiveNoRouter.Action> = []
   for (const controllerAction of controller.actions) {
-    if (!options[controllerAction.method]) {
-      options[controllerAction.method] = []
-    }
-
     const controllerSchema = controllerAction.schema || null
     let schema = null
 
@@ -167,15 +161,32 @@ export default (controller: FiveNoRouter.Controller): Router => {
 
     const actionData = { ...controllerAction, schema: schema, data: {} }
 
-    options[controllerAction.method].push(actionData)
+    actions.push(actionData)
 
     add(router, actionData)
   }
 
-  const allowMethods = ['OPTIONS', ...Object.keys(options)] as Array<FiveNoRouter.ActionMethods | 'OPTIONS'>
+  const allowMethods = ['OPTIONS'] as Array<FiveNoRouter.ActionMethods | 'OPTIONS'>
 
-  router.options('*', optionsHandler(controller.path, allowMethods, options))
-  router.all('*', methodNotAllowed(controller.path, allowMethods))
+  const actionsGroup = actions.reduce((acc, item) => {
+    if (!acc[item.path]) {
+      acc[item.path] = []
+    }
+    acc[item.path].push(item)
+
+    if (allowMethods.indexOf(item.method) === -1) {
+      allowMethods.push(item.method)
+    }
+
+    return acc
+  }, {} as FiveNoRouter.ActionsGroupByPath)
+
+  for (const path of Object.keys(actionsGroup)) {
+    router.options(path, optionsHandler(controller.path, allowMethods, actionsGroup[path]))
+  }
+
+  router.options('*', optionsHandler(controller.path, allowMethods, actions))
+  router.all('*', methodNotAllowed(allowMethods))
 
   app.use(controller.path, router)
 
