@@ -36,6 +36,7 @@ export namespace FiveNoRouter {
 
   interface Controller {
     path: string;
+    limit?: string;
     actions: Array<ControllerAction>;
   }
 }

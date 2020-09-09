@@ -25,7 +25,14 @@ const requestHandler = (action: FiveNoRouter.Action) => (req: Request, res: Resp
   next()
 }
 
+// responseHandler
 const responseHandler = (req: Request, res: Response, next: NextFunction) => {
+  res.header('Content-Type', 'application/json')
+  res.header('Access-Control-Allow-Origin', req.headers.origin)
+  res.header('Access-Control-Allow-Credentials', 'true')
+  res.header('Access-Control-Allow-Headers', 'Origin, Content-Type, Authorization')
+  res.header('Vary', 'Origin')
+
   res.action = {
     send: (status: number, success: boolean, message: any) => response({ res, status, success, message }),
     success: (message: any) => response({ res, status: 200, success: true, message }),
@@ -43,8 +50,8 @@ const responseHandler = (req: Request, res: Response, next: NextFunction) => {
   next()
 }
 
-// schema
-const schema = async(req: Request, res: Response, next: NextFunction) => {
+// schemaHandler
+const schemaHandler = async(req: Request, res: Response, next: NextFunction) => {
   if (!req.action.schema) {
     return next()
   }
@@ -67,14 +74,14 @@ const schema = async(req: Request, res: Response, next: NextFunction) => {
   }
 }
 
-// headers
-const header = (action: FiveNoRouter.Action) => (req: Request, res: Response, next: NextFunction) => {
-  res.header('Content-Type', 'application/json')
-  res.header('Access-Control-Allow-Origin', req.headers.origin)
-  res.header('Access-Control-Allow-Credentials', 'true')
-  res.header('Access-Control-Allow-Headers', 'Origin, Content-Type, Authorization')
-  res.header('Vary', 'Origin')
+// errorHandler
+const errorHandler = (err: Error, req: Request, res: Response, next: NextFunction) => {
+  res.action.serverError(err.message)
+  next(err)
+}
 
+// headerHandler
+const headerHandler = (action: FiveNoRouter.Action) => (req: Request, res: Response, next: NextFunction) => {
   if (action.headers) {
     for (const headerName of Object.keys(action.headers)) {
       res.header(headerName, action.headers[headerName])
@@ -84,26 +91,18 @@ const header = (action: FiveNoRouter.Action) => (req: Request, res: Response, ne
   next()
 }
 
-// method not allowed
-const methodNotAllowed = (allowMethods: Array<FiveNoRouter.ActionMethods | 'OPTIONS'>) => (req: Request, res: Response) => {
-  res.header('Content-Type', 'application/json')
+// methodNotAllowedHandler
+const methodNotAllowedHandler = (allowMethods: Array<FiveNoRouter.ActionMethods | 'OPTIONS'>) => (req: Request, res: Response) => {
   res.header('Allow', allowMethods.join(', '))
-  res.header('Access-Control-Allow-Origin', req.headers.origin)
-  res.header('Access-Control-Allow-Credentials', 'true')
-  res.header('Access-Control-Allow-Headers', 'Origin, Content-Type, Authorization')
   res.header('Access-Control-Allow-Methods', allowMethods.join(', '))
   res.header('Vary', 'Origin')
 
   res.action.methodNotAllowed(`${req.method} Is Not Allowed`)
 }
 
-// options
+// optionsHandler
 const optionsHandler = (path: string, allowMethods: Array<FiveNoRouter.ActionMethods | 'OPTIONS'>, options: Array<FiveNoRouter.Action>) => (req: Request, res: Response) => {
-  res.header('Content-Type', 'application/json')
   res.header('Allow', allowMethods.join(', '))
-  res.header('Access-Control-Allow-Origin', req.headers.origin)
-  res.header('Access-Control-Allow-Credentials', 'true')
-  res.header('Access-Control-Allow-Headers', 'Origin, Content-Type, Authorization')
   res.header('Access-Control-Allow-Methods', allowMethods.join(', '))
   res.header('Vary', 'Origin')
 
@@ -122,7 +121,7 @@ const optionsHandler = (path: string, allowMethods: Array<FiveNoRouter.ActionMet
 }
 
 const add = (router: Router, action: FiveNoRouter.Action) => {
-  const handlerData = [requestHandler(action), header(action), schema, action.handler]
+  const handlerData = [requestHandler(action), headerHandler(action), schemaHandler, action.handler]
   switch (action.method.toUpperCase()) {
     case 'GET':
       router.get(action.path, ...handlerData)
@@ -145,10 +144,6 @@ const add = (router: Router, action: FiveNoRouter.Action) => {
 export default (controller: FiveNoRouter.Controller): Router => {
   const router = express.Router()
   const app = express.Router()
-
-  app.use(bodyParser.json())
-  app.use(bodyParser.urlencoded({ extended: true }))
-  app.use(responseHandler)
 
   const actions: Array<FiveNoRouter.Action> = []
   for (const controllerAction of controller.actions) {
@@ -186,9 +181,15 @@ export default (controller: FiveNoRouter.Controller): Router => {
   }
 
   router.options('*', optionsHandler(controller.path, allowMethods, actions))
-  router.all('*', methodNotAllowed(allowMethods))
+  router.all('*', methodNotAllowedHandler(allowMethods))
 
-  app.use(controller.path, router)
+  app.use(controller.path,
+    responseHandler,
+    bodyParser.json({ limit: controller?.limit ?? '10mb' }),
+    bodyParser.urlencoded({ limit: controller?.limit ?? '10mb', extended: true }),
+    router,
+    errorHandler,
+  )
 
   return app
 }
