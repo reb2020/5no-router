@@ -13,6 +13,35 @@ const schema = {
   },
 }
 
+const schemaWithSchema = {
+  id: {
+    type: Number,
+    defaultValue: null,
+    required: true,
+  },
+  address: {
+    type: Object,
+    required: true,
+    defaultValue: {},
+    schema: {
+      id: {
+        type: String,
+        required: true,
+        filters: [
+          'trim',
+        ],
+      },
+      name: {
+        type: String,
+        required: true,
+        filters: [
+          'trim',
+        ],
+      },
+    },
+  },
+}
+
 app.use(Router({
   path: '/test',
   actions: [
@@ -54,6 +83,18 @@ app.use(Router({
       path: '/',
       method: 'PUT',
       schema: schema,
+      handler: (req, res) => res.action.success(req.action.data.id),
+    },
+  ],
+}))
+
+app.use(Router({
+  path: '/schema',
+  actions: [
+    {
+      path: '/',
+      method: 'POST',
+      schema: schemaWithSchema,
       handler: (req, res) => res.action.success(req.action.data.id),
     },
   ],
@@ -222,6 +263,19 @@ describe('Router', () => {
         .post('/failed/1233')
         .end((err, res) => {
           res.should.have.status(405)
+          res.body.should.be.a('object')
+          res.body.should.have.property('status')
+          res.body.should.have.property('success')
+          res.body.should.have.property('message')
+          done()
+        })
+    })
+    
+    it('failed with schema', (done) => {
+      chai.request(app)
+        .post('/schema')
+        .end((err, res) => {
+          res.should.have.status(400)
           res.body.should.be.a('object')
           res.body.should.have.property('status')
           res.body.should.have.property('success')

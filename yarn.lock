@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@5no/schema@^1.3.7":
-  version "1.3.7"
-  resolved "https://registry.yarnpkg.com/@5no/schema/-/schema-1.3.7.tgz#1b3eb52e50c8cc52afce68095cc96dc9b536cf61"
-  integrity sha512-uqJ03DhDDXCUgXpUa2CR27rlboW/kuA9zE6acY3mgD4q//kGU5QoZKtdkPczMO/XqbZrwJtf+iXjAenc9v0sTA==
+"@5no/schema@^1.3.8":
+  version "1.3.8"
+  resolved "https://registry.yarnpkg.com/@5no/schema/-/schema-1.3.8.tgz#a8cfe6998072e7c6243ffaba3b8cd9a007354827"
+  integrity sha512-bMVbCDvMZAS7VJTyf5hwMP+xcXuRB4cTmFsuU8x6h2MwTVizm7ODakvc/PxCRBGY0FY00WTLk3MaHvUdkUfzcw==
   dependencies:
     moment "^2.27.0"
 
