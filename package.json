@@ -1,6 +1,6 @@
 {
   "name": "@5no/router",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Express router with schema",
   "main": "index.js",
   "types": "typings/index.d.ts",
