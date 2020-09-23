@@ -1,6 +1,7 @@
 import { FiveNoRouter } from '../typings/app'
 
 import SchemaValidator from '@5no/schema'
+import { setLanguage, translate, initDefault } from '@5no/i18n'
 import express, { Request, Response, NextFunction, Router } from 'express'
 import bodyParser from 'body-parser'
 
@@ -30,7 +31,7 @@ const responseHandler = (req: Request, res: Response, next: NextFunction) => {
   res.header('Content-Type', 'application/json')
   res.header('Access-Control-Allow-Origin', req.headers.origin)
   res.header('Access-Control-Allow-Credentials', 'true')
-  res.header('Access-Control-Allow-Headers', 'Origin, Content-Type, Authorization')
+  res.header('Access-Control-Allow-Headers', 'Origin, Content-Type, Authorization, Language')
   res.header('Vary', 'Origin')
 
   res.action = {
@@ -45,6 +46,25 @@ const responseHandler = (req: Request, res: Response, next: NextFunction) => {
     forbidden: (message: any) => response({ res, status: 403, success: false, message }),
     serverError: (message: any) => response({ res, status: 500, success: false, message }),
     tooManyRequests: (message: any) => response({ res, status: 429, success: false, message }),
+  }
+
+  next()
+}
+
+// i18nHandler
+const i18nHandler = (req: Request, res: Response, next: NextFunction) => {
+  req.i18n = {
+    __: translate,
+    initDefault: initDefault,
+    setLanguage: setLanguage,
+  }
+
+  const lang = req.headers?.Language || null
+
+  if (lang) {
+    req.i18n.setLanguage(lang)
+  } else {
+    req.i18n.initDefault()
   }
 
   next()
@@ -121,7 +141,7 @@ const optionsHandler = (path: string, allowMethods: Array<FiveNoRouter.ActionMet
 }
 
 const add = (router: Router, action: FiveNoRouter.Action) => {
-  const handlerData = [requestHandler(action), headerHandler(action), schemaHandler, action.handler]
+  const handlerData = [requestHandler(action), headerHandler(action), i18nHandler, schemaHandler, action.handler]
   switch (action.method.toUpperCase()) {
     case 'GET':
       router.get(action.path, ...handlerData)

@@ -1,4 +1,6 @@
 import { Request, Response } from 'express'
+import { translate, setLanguage, initDefault } from '@5no/i18n'
+
 import Router from '../lib/index'
 import * as App from './app'
 
@@ -7,6 +9,11 @@ export * from './app'
 declare module 'express-serve-static-core' {
   interface Request {
     action: App.FiveNoRouter.Action;
+    i18n: {
+      __: translate;
+      setLanguage: setLanguage;
+      initDefault: initDefault;
+    };
   }
 
   interface Response {

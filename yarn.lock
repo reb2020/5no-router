@@ -2,11 +2,17 @@
 # yarn lockfile v1
 
 
-"@5no/schema@^1.3.8":
-  version "1.3.8"
-  resolved "https://registry.yarnpkg.com/@5no/schema/-/schema-1.3.8.tgz#a8cfe6998072e7c6243ffaba3b8cd9a007354827"
-  integrity sha512-bMVbCDvMZAS7VJTyf5hwMP+xcXuRB4cTmFsuU8x6h2MwTVizm7ODakvc/PxCRBGY0FY00WTLk3MaHvUdkUfzcw==
+"@5no/i18n@^1.0.3":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@5no/i18n/-/i18n-1.0.3.tgz#1eec48d4e8933bce282207e24c4b9772286834d7"
+  integrity sha512-gNnEe0i0peRwBUxxjYID1R63y9AKreBDF+7wE8Apl1a9WMv3SELprWxzk4MeD8PL+grlTrfaVJhpbIz4uQGTaw==
+
+"@5no/schema@^1.3.9":
+  version "1.3.9"
+  resolved "https://registry.yarnpkg.com/@5no/schema/-/schema-1.3.9.tgz#4560686359eb269b18d74e828219368fbc187b49"
+  integrity sha512-osnU/r8xjwEuJy2empCElEmjDfOW8g00NaeehpScWY2hTme1mD4/vlaZit2LbQLPs9X8Dji0CtNVArn80P31Kg==
   dependencies:
+    "@5no/i18n" "^1.0.3"
     moment "^2.27.0"
 
 "@babel/code-frame@^7.0.0":
