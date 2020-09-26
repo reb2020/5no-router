@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { translate, setLanguage, initDefault, getTranslateDatabases } from '@5no/i18n'
+import { translate, setLanguage, initDefault, getTranslateDatabases, currentLanguage, defaultLanguage } from '@5no/i18n'
 
 import Router from '../lib/index'
 import * as App from './app'
@@ -14,6 +14,8 @@ declare module 'express-serve-static-core' {
       setLanguage: setLanguage;
       initDefault: initDefault;
       getTranslateDatabases: getTranslateDatabases;
+      currentLanguage: currentLanguage;
+      defaultLanguage: defaultLanguage;
     };
   }
 

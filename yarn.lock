@@ -2,17 +2,17 @@
 # yarn lockfile v1
 
 
-"@5no/i18n@^1.0.5":
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/@5no/i18n/-/i18n-1.0.5.tgz#8f3920696a41a8a38a0d983c82db73d3eba8a773"
-  integrity sha512-DyaYDm3pYSVSU8sggfpsknwmbViLpdwvqhX9U9l1kyFXby96heeF6kFHPEqHLOrmKcsnKyF3ssqzc9DzIG9EBQ==
+"@5no/i18n@^1.0.7":
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/@5no/i18n/-/i18n-1.0.7.tgz#d8dfb067f7c6bccd9423c6cb0554d21a96be2ad4"
+  integrity sha512-62AdJWiRb9Q4oWCR6UqzoteqkKJwCyAwikfYjQ98uDbcok5y/wYuuR7tRcNFsszqWvZ7vYsWvJtJR8232SQ1NA==
 
-"@5no/schema@^1.4.0":
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/@5no/schema/-/schema-1.4.0.tgz#6d5a652204721898cccf718765f22b958da3b735"
-  integrity sha512-gnENHq2c0bFCzZcCUZVcCuQZ1fck02NmzJqxEJilZUIwFTcQ7jlsBq24jvxmmrXwYt4NSc2obvCE0wPV/2Wfuw==
+"@5no/schema@^1.4.2":
+  version "1.4.2"
+  resolved "https://registry.yarnpkg.com/@5no/schema/-/schema-1.4.2.tgz#82559774adcbccb750c826a0484bf1881d7631d5"
+  integrity sha512-zn8o5y+UUOeW9GOpIp54Ws/qAmHFfeMmZoMOtfWln1Xfr8gqsR+EqqJEx6w7Pwo1+rK4BnYDC2+f0mGzbknkZA==
   dependencies:
-    "@5no/i18n" "^1.0.5"
+    "@5no/i18n" "^1.0.7"
     moment "^2.27.0"
 
 "@babel/code-frame@^7.0.0":
