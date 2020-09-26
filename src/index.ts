@@ -70,6 +70,8 @@ const i18nHandler = (req: Request, res: Response, next: NextFunction) => {
     req.i18n.initDefault()
   }
 
+  req.i18n.currentLanguage = currentLanguage
+
   next()
 }
 
