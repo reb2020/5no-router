@@ -10,12 +10,12 @@ declare module 'express-serve-static-core' {
   interface Request {
     action: App.FiveNoRouter.Action;
     i18n: {
-      __: translate;
-      setLanguage: setLanguage;
-      initDefault: initDefault;
-      getTranslateDatabases: getTranslateDatabases;
-      currentLanguage: currentLanguage;
-      defaultLanguage: defaultLanguage;
+      __: typeof translate;
+      setLanguage: typeof setLanguage;
+      initDefault: typeof initDefault;
+      getTranslateDatabases: typeof getTranslateDatabases;
+      currentLanguage: typeof currentLanguage;
+      defaultLanguage: typeof defaultLanguage;
     };
   }
 

@@ -1,8 +1,8 @@
-import { FiveNoRouter } from '../typings/app'
+import { FiveNoRouter, Response, Request } from '../typings/app'
 
 import SchemaValidator from '@5no/schema'
 import { setLanguage, translate, initDefault, getTranslateDatabases, currentLanguage, defaultLanguage } from '@5no/i18n'
-import express, { Request, Response, NextFunction, Router } from 'express'
+import express, { NextFunction, Router } from 'express'
 import bodyParser from 'body-parser'
 
 // response / request
@@ -62,10 +62,10 @@ const i18nHandler = (req: Request, res: Response, next: NextFunction) => {
     defaultLanguage: defaultLanguage,
   }
 
-  const lang = req.headers?.language || null
+  const lang = req.headers?.language
 
   if (lang) {
-    req.i18n.setLanguage(lang)
+    req.i18n.setLanguage(lang as string)
   } else {
     req.i18n.initDefault()
   }
