@@ -7,13 +7,13 @@
   resolved "https://registry.yarnpkg.com/@5no/i18n/-/i18n-1.0.7.tgz#d8dfb067f7c6bccd9423c6cb0554d21a96be2ad4"
   integrity sha512-62AdJWiRb9Q4oWCR6UqzoteqkKJwCyAwikfYjQ98uDbcok5y/wYuuR7tRcNFsszqWvZ7vYsWvJtJR8232SQ1NA==
 
-"@5no/schema@^1.4.2":
-  version "1.4.2"
-  resolved "https://registry.yarnpkg.com/@5no/schema/-/schema-1.4.2.tgz#82559774adcbccb750c826a0484bf1881d7631d5"
-  integrity sha512-zn8o5y+UUOeW9GOpIp54Ws/qAmHFfeMmZoMOtfWln1Xfr8gqsR+EqqJEx6w7Pwo1+rK4BnYDC2+f0mGzbknkZA==
+"@5no/schema@^1.4.3":
+  version "1.4.3"
+  resolved "https://registry.yarnpkg.com/@5no/schema/-/schema-1.4.3.tgz#ce11523a09d42cb1670b25793f5fe386c094b486"
+  integrity sha512-GAdZa5GvtZbeIqVBzZu7z3AJmUxtsusd0IVSw3M0gMPKeC8lx/PNWzJihoUvUZ8LkREYdWIe7SUW4lPtNsWaNg==
   dependencies:
     "@5no/i18n" "^1.0.7"
-    moment "^2.27.0"
+    dayjs "^1.10.1"
 
 "@babel/code-frame@^7.0.0":
   version "7.10.4"
@@ -539,6 +539,11 @@ cross-spawn@^7.0.2:
     path-key "^3.1.0"
     shebang-command "^2.0.0"
     which "^2.0.1"
+
+dayjs@^1.10.1:
+  version "1.10.1"
+  resolved "https://registry.yarnpkg.com/dayjs/-/dayjs-1.10.1.tgz#114f678624842035396667a24eb1436814bc16fd"
+  integrity sha512-2xg7JrHQeLBQFkvTumLoy62x1siyeocc98QwjtURgvRqOPYmAkMUdmSjrOA+MlmL6QMQn5MUhDf6rNZNuPc1LQ==
 
 debug@2.6.9, debug@^2.6.9:
   version "2.6.9"
@@ -1503,11 +1508,6 @@ mocha@^8.1.3:
     yargs "13.3.2"
     yargs-parser "13.1.2"
     yargs-unparser "1.6.1"
-
-moment@^2.27.0:
-  version "2.27.0"
-  resolved "https://registry.yarnpkg.com/moment/-/moment-2.27.0.tgz#8bff4e3e26a236220dfe3e36de756b6ebaa0105d"
-  integrity sha512-al0MUK7cpIcglMv3YF13qSgdAIqxHTO7brRtaz3DlSULbqfazqkc5kEjNrLDOM7fsjshoFIihnU8snrP7zUvhQ==
 
 ms@2.0.0:
   version "2.0.0"
